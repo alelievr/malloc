@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 01:05:59 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 02:26:01 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/12/21 13:06:00 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_heap		*alloc_and_append_new_heap(void)
 {
 	t_heap		*h[4];
 	t_heap		*current_heap;
+	static int	index = 0;
 
 	if ((h[0] = ALLOC_PAGE(getpagesize())) == MAP_FAILED)
 		ft_exit("failed to initialize malloc !\n");
@@ -41,6 +42,7 @@ t_heap		*alloc_and_append_new_heap(void)
 	if (FOREACH(h, he))
 	{
 		he->free_pages_number = MAX_PAGES_PER_HEAP;
+		he->index = index++;
 		ft_memset(he->pages_chunk, 0, sizeof(he->pages_chunk));
 		he->next = NULL;
 		current_heap = get_heap();
@@ -51,7 +53,7 @@ t_heap		*alloc_and_append_new_heap(void)
 	return (h[0]);
 }
 
-bool		foreach_heap(t_heap_callback f, bool failsafe)
+bool		foreach_heap(t_heap_callback f, bool alwaysfalse)
 {
 	t_heap		*h;
 	bool		succeed;
@@ -67,7 +69,7 @@ bool		foreach_heap(t_heap_callback f, bool failsafe)
 		}
 		h = h->next;
 	}
-	if (!succeed && !failsafe)
+	if (!succeed && !alwaysfalse)
 		f(alloc_and_append_new_heap());
 	return succeed;
 }

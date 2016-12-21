@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 02:26:48 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:19:57 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,12 @@ enum	E_MALLOC_COLORS
 
 enum	E_MALLOC_INFO
 {
-	M_CHECK_IGNORE = 0x1,
-	M_CHECK_PRINT = 0x2,
-	M_CHECK_ABORT = 0x4,
-	M_CHECK_STACKTRACE = 0x8,
-	M_LIMIT_PAGES = 0x10,
+	M_CHECK_IGNORE =		0x1,
+	M_CHECK_PRINT =			0x2,
+	M_CHECK_ABORT =			0x4,
+	M_CHECK_STACKTRACE =	0x8,
+	M_LIMIT_PAGES =			0x10,
+	M_VERBOSE =				0x20,
 };
 
 /*
@@ -77,8 +78,8 @@ enum	E_MALLOC_LIMITS
 
 typedef struct		s_alloc
 {
-	void	*start;
-	void	*end;
+	void			*start;
+	void			*end;
 	struct s_alloc	*next;
 }					t_alloc;
 
@@ -98,7 +99,8 @@ typedef struct		s_heap
 	t_page			*pages_chunk[MAX_PAGES_PER_HEAP];
 	struct s_heap	*next;
 	int				free_pages_number;
-	int				allocated;
+	short			allocated;
+	short			index;
 }					t_heap;
 
 typedef struct		s_malloc_info
@@ -138,6 +140,25 @@ t_malloc_info		*get_malloc_info(void);
 */
 void			*mmap_wrapper(size_t size);
 void			munmap_wrapper(void *addr, size_t size);
+
+/*
+**	Dump and print functions:
+*/
+bool			dump_all(void);
+bool			dump_heap(t_heap *h);
+bool			dump_page(t_page *p);
+
+/*
+**	Virtual memory management functions:
+*/
+void			*page_alloc(t_page *p, size_t size);
+void			*ft_malloc(size_t size);
+void			*ft_realloc(size_t size);
+void			*ft_reallocf(size_t size);
+void			*ft_calloc(size_t size);
+void			*ft_valloc(size_t size);
+
+
 
 /*typedef struct	s_allocated
 {

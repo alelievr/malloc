@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/12/21 02:08:09 by alelievr         ###   ########.fr        #
+#    Updated: 2016/12/21 13:54:56 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,8 @@ SRC			=	main.c			\
 				utils.c			\
 				options.c		\
 				cleanup.c		\
+				dump.c			\
+				alloc_page.c	\
 
 #	Objects
 OBJDIR		=	obj
