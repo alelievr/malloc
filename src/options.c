@@ -1,21 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   options.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/24 02:55:01 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 01:21:01 by alelievr         ###   ########.fr       */
+/*   Created: 2016/12/21 00:42:02 by alelievr          #+#    #+#             */
+/*   Updated: 2016/12/21 01:47:05 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
-#include <stdio.h>
 
-int		main(void)
+void	mallopt(int flag, int value)
 {
-	printf("sizeof(page): %lu\n", sizeof(t_page));
-	printf("sizeof(heap): %lu\n", sizeof(t_heap));
-	return (0);
+	if (flag == M_LIMIT_PAGES)
+	{
+		get_malloc_info()->max_pages = value;
+		return ;
+	}
+	if (value)
+		get_malloc_info()->debug_flag |= 1 << flag;
+	else
+		get_malloc_info()->debug_flag &= ~(1 << flag);
+}
+
+t_malloc_info		*get_malloc_info(void)
+{
+	static t_malloc_info		info;
+
+	return &info;
 }

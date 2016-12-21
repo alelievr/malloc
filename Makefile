@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/03/31 22:21:17 by alelievr         ###   ########.fr        #
+#    Updated: 2016/12/21 02:08:09 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,11 @@
 #	Sources
 SRCDIR		=	src
 SRC			=	main.c			\
-				malloc.c		\
+				heap.c			\
+				page.c			\
+				utils.c			\
+				options.c		\
+				cleanup.c		\
 
 #	Objects
 OBJDIR		=	obj
@@ -155,9 +159,9 @@ endif
 
 ifeq "$(strip $(LIBFT))" "2"
 ifneq ($(wildcard ./libft),)
-	LIBDIRS += "libft"
+	LIBDIRS += "libft/"
 	LDLIBS += "-lft"
-	INCDIRS += "libft"
+	INCDIRS += "libft/include"
 endif
 endif
 
