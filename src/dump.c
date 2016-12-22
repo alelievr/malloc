@@ -6,11 +6,11 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 12:59:46 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 13:59:30 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/12/22 02:07:58 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include "malloc_internal.h"
 
 static bool		expand = false;
 static bool		indent = false;
@@ -27,7 +27,7 @@ bool		dump_page(t_page *p)
 	}
 	while (alloc)
 	{
-		ft_sprintf("allocated: %p - %p\n", alloc->start, alloc->end);
+		ft_printf("%sallocated: %p - %p\n", ind, alloc->start, alloc->end);
 		alloc = alloc->next;
 	}
 	return true;
@@ -55,12 +55,12 @@ bool		dump_heap(t_heap *h)
 	}
 	ft_printf("dumping all pages in the heap block [%i]\n", h->index);
 	ft_printf("page id | type | blocks in page | page size | start ptr\n");
-	ft_printf("-------------------------------------------------------\n");
+	ft_printf("--------|------|----------------|-----------|----------\n");
 	if (FOR(i = 0, i < MAX_PAGES_PER_HEAP, i++))
 		if (h->pages_chunk[i])
 		{
 			ALIAS(h->pages_chunk[i], p);
-			ft_printf("-> %.3i | %5s | %.8i | %p\n", i, type_to_string(p->page_type), p->end - p->start, p->start);
+			ft_printf("-> %.4i | %4s | %.10i     | %p\n", i, type_to_string(p->page_type), p->end - p->start, p->start);
 			if (expand)
 				dump_page(p);
 		}

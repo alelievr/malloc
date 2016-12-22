@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 15:19:57 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/12/22 02:17:46 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,13 @@ enum	E_MALLOC_INFO
 	M_CHECK_PRINT =			0x2,
 	M_CHECK_ABORT =			0x4,
 	M_CHECK_STACKTRACE =	0x8,
-	M_LIMIT_PAGES =			0x10,
-	M_VERBOSE =				0x20,
+	M_CHECK_VERBOSE =		0x10,
+	M_LIMIT_PAGES =			0x20,
+	M_IGNORE =				M_CHECK_IGNORE,
+	M_PRINT =				M_CHECK_PRINT,
+	M_ABORT =				M_CHECK_ABORT,
+	M_STACKTRACE =			M_CHECK_STACKTRACE,
+	M_VERBOSE =				M_CHECK_VERBOSE,
 };
 
 /*
@@ -50,8 +55,8 @@ enum	E_MALLOC_INFO
 
 enum	E_MALLOC_SIZE
 {
-	M_TINY = 32,
-	M_SMALL = 256,
+	M_TINY = 64,
+	M_SMALL = 512,
 	M_LARGE = -1,
 	M_TINY_PAGE = M_TINY * MAX_ALLOCS_IN_PAGE,
 	M_SMALL_PAGE = M_SMALL * MAX_ALLOCS_IN_PAGE,
@@ -65,16 +70,16 @@ enum	E_MALLOC_LIMITS
 	M_MIN = -3,
 };
 
-# define DEBUG_PRINT (get_malloc_info()->debug_flag & 1 << M_CHECK_PRINT)
-# define DEBUG_IGNORE (get_malloc_info()->debug_flag & 1 << M_CHECK_IGNORE)
-# define DEBUG_ABORT (get_malloc_info()->debug_flag & 1 << M_CHECK_ABORT)
-# define DEBUG_STACKTRACE (get_malloc_info()->debug_flag & 1 << M_CHECK_STACKTRACE)
-# define ERR(x) write(2, x, sizeof(x));
+# define M_OPT_PRINT (get_malloc_info()->debug_flag & 1 << M_CHECK_PRINT)
+# define M_OPT_IGNORE (get_malloc_info()->debug_flag & 1 << M_CHECK_IGNORE)
+# define M_OPT_ABORT (get_malloc_info()->debug_flag & 1 << M_CHECK_ABORT)
+# define M_OPT_STACKTRACE (get_malloc_info()->debug_flag & 1 << M_CHECK_STACKTRACE)
+# define M_OPT_VERBOSE (get_malloc_info()->debug_flag & 1 << M_CHECK_VERBOSE)
+# define ERR(x, args...) ft_dprintf(2, x, ##args);
 
 # define LOCK		pthread_mutex_lock(&g_malloc_mutex);
 # define UNLOCK		pthread_mutex_unlock(&g_malloc_mutex);
 # define NIL		NULL
-# define ALLOC_PAGE(x) mmap(NIL,x,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE,0,0)
 
 typedef struct		s_alloc
 {
@@ -118,7 +123,7 @@ extern pthread_mutex_t		g_malloc_mutex;
 /*
 **	Pages functions:
 */
-t_page				*new_page(size_t size);
+t_page				*new_page(size_t size, bool locked);
 void				delete_page(t_page *p);
 bool				foreach_pages(t_page_callback f);
 
@@ -133,71 +138,39 @@ bool				foreach_heap(t_heap_callback f, bool failsafe);
 **	Option functons:
 */
 t_malloc_info		*get_malloc_info(void);
-
+void				mallopt(int flag, int value);
 
 /*
 **	Utils functions:
 */
-void			*mmap_wrapper(size_t size);
-void			munmap_wrapper(void *addr, size_t size);
+void				*mmap_wrapper(void *ptr, size_t size);
+void				munmap_wrapper(void *addr, size_t size);
+int					size_to_type(size_t size);
+
+void				find_page(void *ptr, t_heap **f_heap, int *f_index);
+t_alloc				*find_alloc(t_page *p, void *ptr);
 
 /*
 **	Dump and print functions:
 */
-bool			dump_all(void);
-bool			dump_heap(t_heap *h);
-bool			dump_page(t_page *p);
+bool				dump_all(void);
+bool				dump_heap(t_heap *h);
+bool				dump_page(t_page *p);
 
 /*
 **	Virtual memory management functions:
 */
-void			*page_alloc(t_page *p, size_t size);
-void			*ft_malloc(size_t size);
-void			*ft_realloc(size_t size);
-void			*ft_reallocf(size_t size);
-void			*ft_calloc(size_t size);
-void			*ft_valloc(size_t size);
+void				*alloc_page(t_page *p, size_t size);
+void				*ft_alloc(void *ptr, size_t size);
+t_page				*large_alloc(size_t size);
 
-
-
-/*typedef struct	s_allocated
-{
-	void	*addr;
-	size_t	size;
-}				t_allocated;
-
-typedef struct	s_allocated_list
-{
-	t_allocated				allocs[128];
-	struct s_allocated_list	*next;
-}				t_alloc_list;
-
-typedef struct	s_page
-{
-	void			*addr;
-	size_t			size;
-	t_alloc_list	alloc;
-	struct s_page	*next;
-}				t_page;
-
-
-typedef struct	s_heap
-{
-	t_page			pages[256];
-	t_alloc_list	fatalloc;
-	t_malloc_info	infos;
-}				t_heap;
-
-t_heap			*get_heap(void);
-t_malloc_info	*get_malloc_info(void);
-void			*fatalloc(size_t size);
-
-void			hexdump_page(t_page *p);
-void			hexdump_allocated(t_allocated *a);
-
-int				find_fatallocated_addr(void *ptr);
-int				find_allocated_addr(void *ptr);
-void			free_fatalloc(int index);
-void			free_alloc(int index);*/
+void				*ft_malloc(size_t size);
+void				*ft_realloc(void *ptr, size_t size);
+void				*ft_reallocf(void *ptr, size_t size);
+void				*ft_calloc(size_t size);
+void				*ft_valloc(size_t size);
+void				ft_free(void *ptr);
+size_t				malloc_page_size(void *ptr);
+size_t				malloc_size(void *ptr);
 
 #endif

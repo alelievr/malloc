@@ -6,11 +6,11 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 15:19:28 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/12/22 02:07:44 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include "malloc_internal.h"
 
 static void	alloc_start_page(t_page *p, t_alloc *free_block, size_t size)
 {
@@ -57,7 +57,7 @@ static void	update_max_free_bytes_block(t_page *p)
 	p->max_free_bytes_block = max;
 }
 
-void		*page_alloc(t_page *p, size_t size)
+void		*alloc_page(t_page *p, size_t size)
 {
 	t_alloc		*free_alloc_block;
 	t_alloc		*alloc;
@@ -73,13 +73,16 @@ void		*page_alloc(t_page *p, size_t size)
 	//check if enouth space between strt of page and first allocated block:
 	if (alloc == NULL || alloc->start - p->start > (long)size)
 		alloc_start_page(p, free_alloc_block, size);
-	while (alloc->next)
+	else
 	{
-		if (alloc->next->start - alloc->end > (long)size)
-			alloc_at_page(alloc, free_alloc_block, size);
-		alloc = alloc->next;
+		while (alloc->next)
+		{
+			if (alloc->next->start - alloc->end > (long)size)
+				alloc_at_page(alloc, free_alloc_block, size);
+			alloc = alloc->next;
+		}
+		alloc_at_page(alloc, free_alloc_block, size);
 	}
-	alloc_at_page(alloc, free_alloc_block, size);
 	update_max_free_bytes_block(p);
 	return free_alloc_block->start;
 }

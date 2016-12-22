@@ -6,11 +6,11 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 00:42:02 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 01:47:05 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/12/22 02:08:20 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include "malloc_internal.h"
 
 void	mallopt(int flag, int value)
 {

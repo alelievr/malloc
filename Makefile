@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/12/21 13:54:56 by alelievr         ###   ########.fr        #
+#    Updated: 2016/12/22 02:21:44 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,10 @@ SRC			=	main.c			\
 				cleanup.c		\
 				dump.c			\
 				alloc_page.c	\
+				alloc_utils.c	\
+				alloc.c			\
+				realloc.c		\
+				free.c			\
 
 #	Objects
 OBJDIR		=	obj
@@ -39,7 +43,7 @@ CPPVERSION	=	c++11
 #Example $> make DEBUG=2 will set debuglevel to 2
 
 #	Includes
-INCDIRS		=	.
+INCDIRS		=	inc
 
 #	Libraries
 LIBDIRS		=	
@@ -53,7 +57,7 @@ WERROR		=	-Werror
 CFLAGS		=	-Wall -Wextra
 CPROTECTION	=	-z execstack -fno-stack-protector
 
-DEBUGFLAGS1	=	-ggdb -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -O0
+DEBUGFLAGS1	=	-ggdb# -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -O0
 DEBUGFLAGS2	=	-fsanitize-memory-track-origins=2
 OPTFLAGS1	=	-funroll-loops -O2
 OPTFLAGS2	=	-pipe -funroll-loops -Ofast
