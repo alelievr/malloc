@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 17:58:41 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:17:01 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 20:41:23 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ t_page		*large_alloc(size_t size)
 	alloc->end = p->end;
 	alloc->next = NULL;
 	p->alloc = alloc;
+	if (M_OPT_VERBOSE)
+		ft_printf("allocated large block at address: %p\n", alloc->start);
 	return p;
 }
 

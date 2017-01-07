@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:17:46 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 20:57:22 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ extern pthread_mutex_t		g_malloc_mutex;
 **	Pages functions:
 */
 t_page				*new_page(size_t size, bool locked);
-void				delete_page(t_page *p);
+void				free_page(t_page *p);
 bool				foreach_pages(t_page_callback f);
 
 /*
@@ -147,8 +147,10 @@ void				*mmap_wrapper(void *ptr, size_t size);
 void				munmap_wrapper(void *addr, size_t size);
 int					size_to_type(size_t size);
 
-void				find_page(void *ptr, t_heap **f_heap, int *f_index);
+bool				find_page(void *ptr, t_heap **f_heap, int *f_index);
+void				update_max_free_bytes_block(t_page *p);
 t_alloc				*find_alloc(t_page *p, void *ptr);
+void				free_alloc(t_page *p, t_alloc *a);
 
 /*
 **	Dump and print functions:

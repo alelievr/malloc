@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/20 23:25:04 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:08:24 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 19:55:02 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static bool	delete_page_from_heap(t_page *p, t_heap *h, int index)
 	return (true);
 }
 
-void		delete_page(t_page *p)
+void		free_page(t_page *p)
 {
 	LOCK;
 	g_current_page = p;

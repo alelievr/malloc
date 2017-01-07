@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:07:44 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 20:48:53 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	alloc_at_page(t_alloc *prev, t_alloc *free_block, size_t size)
 	free_block->next = tmp;
 }
 
-static void	update_max_free_bytes_block(t_page *p)
+void		update_max_free_bytes_block(t_page *p)
 {
 	long		max;
 	t_alloc		*alloc;
@@ -83,6 +83,8 @@ void		*alloc_page(t_page *p, size_t size)
 		}
 		alloc_at_page(alloc, free_alloc_block, size);
 	}
+	if (M_OPT_VERBOSE)
+		ft_printf("allocated %s block of [%i] at address: %p\n", size_to_type(size) == M_SMALL ? "small" : "tiny", size, free_alloc_block->start);
 	update_max_free_bytes_block(p);
 	return free_alloc_block->start;
 }

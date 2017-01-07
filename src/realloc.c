@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:02 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:21:09 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 20:52:24 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 	t_page		*new;
 
 	INIT(t_page, *p, h->pages_chunk[index]);
+	if (M_OPT_VERBOSE)
+		ft_printf("reallocating large page from %io to %io\n", p->alloc->end - p->alloc->start, size);
 	if ((ptr = mmap_wrapper(ptr, size)) == MAP_FAILED)
 	{
 		if (!(new = mmap_wrapper(NULL, sizeof(t_page) + size)))
@@ -39,13 +41,52 @@ static void	*realloc_ptr_not_found(void)
 	return NULL;
 }
 
+static void	*ft_realloc_switch_page(void *ptr, t_heap *h, int index, size_t new_size)
+{
+	t_alloc		*a;
+	void		*ret;
+
+	if (M_OPT_VERBOSE)
+		ft_printf("can't find space required for realloc, copying all datas to a new page\n");
+	ALIAS(h->pages_chunk[index], p);
+	a = find_alloc(p, ptr);
+	ret = ft_alloc(NULL, new_size);
+	ft_memcpy(ret, a->start, a->end - a->start);
+	free_alloc(p, a);
+	return (ret);
+}
+
+static void	*ft_realloc_basic(void *ptr, t_heap *h, int index, size_t size)
+{
+	t_alloc		*a;
+
+	ALIAS(h->pages_chunk[index], p);
+	a = find_alloc(p, ptr);
+	if ((a->next == NULL && (size_t)(p->end - a->end) > size)
+			|| (a->next != NULL && (size_t)(a->next->start - a->end) > size))
+	{
+		if (M_OPT_VERBOSE)
+			ft_printf("altering allocated size: from %i ot %i\n", a->end - a->start, size);
+		a->end = a->start + size;
+		update_max_free_bytes_block(p);
+		return (ptr);
+	}
+	else
+		return (ft_realloc_switch_page(ptr, h, index, size));
+}
+
 void		*ft_realloc(void *ptr, size_t size)
 {
 	t_heap		*h;
-	int			index;
 	t_alloc		*a;
+	int			index;
 
-	find_page(ptr, &h, &index);
+	if (!find_page(ptr, &h, &index))
+	{
+		if (M_OPT_VERBOSE)
+			ft_printf("bad address passed to realloc, NULL.\n");
+		return (NULL);
+	}
 	if (h == NULL)
 		return (realloc_ptr_not_found());
 	ALIAS(h->pages_chunk[index], p);
@@ -56,17 +97,12 @@ void		*ft_realloc(void *ptr, size_t size)
 		p = large_alloc(size);
 		a = find_alloc(p, ptr);
 		memcpy(p->start, a->start, a->end - a->start);
+		free_alloc(p, a);
 	}
-	else if (p->page_type == M_TINY && size_to_type(size) == M_SMALL)
-	{
-		//move alloc content to another page
-	}
-	else if (p->page_type == M_SMALL && size_to_type(size) == M_TINY)
-	{
-		//exact reverse of before
-	}
+	else if ((p->page_type == M_TINY && size_to_type(size) == M_SMALL)
+			|| (p->page_type == M_SMALL && size_to_type(size) == M_TINY))
+		return ft_realloc_switch_page(ptr, h, index, size);
 	else
-		//basic case, no need to change page type
-		;
+		return ft_realloc_basic(ptr, h, index, size);
 	return NULL;
 }
