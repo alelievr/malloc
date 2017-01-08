@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/12/22 02:21:44 by alelievr         ###   ########.fr        #
+#    Updated: 2017/01/08 21:31:37 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRC			=	main.c			\
 				alloc.c			\
 				realloc.c		\
 				free.c			\
+				malloc.c		\
 
 #	Objects
 OBJDIR		=	obj
@@ -50,15 +51,16 @@ LIBDIRS		=
 LDLIBS		=	
 
 #	Output
-NAME		=	a.out
+NAME		=	libft_malloc.so
 
 #	Compiler
 WERROR		=	-Werror
-CFLAGS		=	-Wall -Wextra
+CFLAGS		=	-Wall -Wextra -fPIC
+LFLAGS		=	-shared
 CPROTECTION	=	-z execstack -fno-stack-protector
 
-DEBUGFLAGS1	=	-ggdb# -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -O0
-DEBUGFLAGS2	=	-fsanitize-memory-track-origins=2
+DEBUGFLAGS1	=	-ggdb -O0
+DEBUGFLAGS2	=	-fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
 OPTFLAGS1	=	-funroll-loops -O2
 OPTFLAGS2	=	-pipe -funroll-loops -Ofast
 
@@ -137,7 +139,7 @@ endif
 ifneq ($(filter 2,$(strip $(DEBUGLEVEL)) ${DEBUG}),)
 	OPTLEVEL = 0
 	OPTI = 0
-	DEBUGFLAGS += $(DEBUGFLAGS1)
+	DEBUGFLAGS += $(DEBUGFLAGS1) $(DEBUGFLAGS2)
 	LINKDEBUG += $(DEBUGFLAGS1) $(DEBUGFLAGS2)
 	export ASAN_OPTIONS=check_initialization_order=1
 endif
@@ -171,6 +173,11 @@ ifneq ($(wildcard ./libft),)
 endif
 endif
 
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+HOSTTYENAME	=	libft_malloc_$(HOSTTYPE).so
+
 #################
 ##  TARGETS    ##
 #################
@@ -183,7 +190,8 @@ $(NAME): $(OBJ)
 	@$(if $(findstring lft,$(LDLIBS)),$(call color_exec_t,$(CCLEAR),$(CCLEAR),\
 		make -j 4 -C libft))
 	@$(call color_exec,$(CLINK_T),$(CLINK),"Link of $(NAME):",\
-		$(LINKER) $(WERROR) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(OPTFLAGS) $(DEBUGFLAGS) $(LINKDEBUG) $(VFRAME) -o $@ $^)
+		$(LINKER) $(WERROR) $(CFLAGS) $(LFLAGS) $(LDFLAGS) $(LDLIBS) $(OPTFLAGS) $(DEBUGFLAGS) $(LINKDEBUG) $(VFRAME) -o $(HOSTTYENAME) $^)
+	@ln -sf $(HOSTTYENAME) $(NAME)
 
 $(OBJDIR)/%.o: %.cpp $(INCFILES)
 	@mkdir -p $(OBJDIR)
@@ -216,6 +224,22 @@ fclean: clean
 re: fclean all
 
 f:	all run
+
+test:
+	#echo DYLD_LIBRARY_PATH=$(realpath $(NAME))
+	@i=0
+	@cd test
+	for f in $(wildcard test/*.c) ; do \
+		i=$(($i+1)); \
+		clang -I inc $(NAME) -o test/test$${i}.bin $$f; \
+	done
+	@for f in $(wildcard test/*.bin) ; do \
+		echo "executing" $$f; \
+		./$$f; \
+	done
+
+hardtest:
+	DYLD_INSERT_LIBRARIES=$(realpath $(NAME)) DYLD_FORCE_FLAT_NAMESPACE=1 bash
 
 #	Checking norme
 norme:
@@ -332,4 +356,4 @@ coffee:
 	@echo '         ""--..,,_____            _____,,..--"""'''
 	@echo '                      """------"""'
 
-.PHONY: all clean fclean re norme codesize
+.PHONY: all clean fclean re norme codesize test

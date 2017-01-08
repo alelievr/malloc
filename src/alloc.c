@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 17:58:41 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 20:41:23 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/08 21:21:16 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,11 @@ t_page		*large_alloc(size_t size)
 	return p;
 }
 
+extern int write(int, char *, size_t);
+
 void			*ft_alloc(void *ptr, size_t size)
 {
+	write(1, "alloc", 5);
 	if (size == 0 && ptr != NULL)
 	{ ft_free(ptr); return ft_alloc(NULL, MIN_ALLOC_SIZE); }
 	if (ptr != NULL)

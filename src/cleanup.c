@@ -6,11 +6,12 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 02:07:44 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 23:13:26 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/08 20:28:32 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
+#include <unistd.h>
 
 static bool	c_free_page(t_page *p, t_heap *h, int index)
 {

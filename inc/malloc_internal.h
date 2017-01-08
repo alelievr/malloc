@@ -6,19 +6,18 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 23:23:06 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/08 21:21:42 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
 
-# include <stdlib.h>
-# include <unistd.h>
 # include <pthread.h>
 # include <stdbool.h>
 # include <sys/mman.h>
 # include "libft.h"
+# include "malloc.h"
 
 # define MIN_ALLOC_SIZE		0x10
 # define MAX_ALLOCS_IN_PAGE	128
@@ -30,21 +29,6 @@ enum	E_MALLOC_COLORS
 	M_FREED_BYTE_COLOR = 226,
 	M_UNALLOCATED_BYTE_COLOR = 245,
 	M_ALLOCATED_BYTE_COLOR = 154,
-};
-
-enum	E_MALLOC_INFO
-{
-	M_CHECK_IGNORE =		0x1,
-	M_CHECK_PRINT =			0x2,
-	M_CHECK_ABORT =			0x4,
-	M_CHECK_STACKTRACE =	0x8,
-	M_CHECK_VERBOSE =		0x10,
-	M_LIMIT_PAGES =			0x20,
-	M_IGNORE =				M_CHECK_IGNORE,
-	M_PRINT =				M_CHECK_PRINT,
-	M_ABORT =				M_CHECK_ABORT,
-	M_STACKTRACE =			M_CHECK_STACKTRACE,
-	M_VERBOSE =				M_CHECK_VERBOSE,
 };
 
 /*
@@ -118,6 +102,8 @@ typedef struct		s_malloc_info
 typedef bool (*t_page_callback)(t_page *p, t_heap *heap, int index);
 typedef bool (*t_heap_callback)(t_heap *h);
 
+extern void					abort(void);
+
 extern pthread_mutex_t		g_malloc_mutex;
 
 /*
@@ -165,15 +151,8 @@ bool				dump_page(t_page *p);
 */
 void				*alloc_page(t_page *p, size_t size);
 void				*ft_alloc(void *ptr, size_t size);
-t_page				*large_alloc(size_t size);
-
-void				*ft_malloc(size_t size);
 void				*ft_realloc(void *ptr, size_t size);
-void				*ft_reallocf(void *ptr, size_t size);
-void				*ft_calloc(size_t size);
-void				*ft_valloc(size_t size);
+t_page				*large_alloc(size_t size);
 void				ft_free(void *ptr);
-size_t				malloc_page_size(void *ptr);
-size_t				malloc_size(void *ptr);
 
 #endif

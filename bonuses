@@ -2,4 +2,4 @@
 +	mallopt(which provides verbose, abort, stacktrace and ignore mode)
 +	cleanup at program exit
 +	thread-safe malloc system (see mutex)
-+	calloc, valloc
++	calloc, reallocf

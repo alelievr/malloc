@@ -6,11 +6,12 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 01:05:59 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:08:10 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/08 21:31:52 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
+# include <unistd.h>
 
 t_heap		*get_heap(void)
 {
