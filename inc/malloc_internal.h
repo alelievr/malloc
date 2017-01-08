@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 20:57:22 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 23:23:06 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ void				mallopt(int flag, int value);
 void				*mmap_wrapper(void *ptr, size_t size);
 void				munmap_wrapper(void *addr, size_t size);
 int					size_to_type(size_t size);
+char				*type_to_text(int type);
 
 bool				find_page(void *ptr, t_heap **f_heap, int *f_index);
 void				update_max_free_bytes_block(t_page *p);

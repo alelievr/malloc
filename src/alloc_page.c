@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 20:48:53 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 23:23:56 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,20 @@ void		update_max_free_bytes_block(t_page *p)
 
 	alloc = p->alloc;
 	max = 0;
-	while (alloc->next)
+	if (alloc)
 	{
-		if (alloc->next->start - alloc->end > max)
-			max = alloc->next->start - alloc->end;
-		alloc = alloc->next;
+		while (alloc->next)
+		{
+			if (alloc->next->start - alloc->end > max)
+				max = alloc->next->start - alloc->end;
+			alloc = alloc->next;
+		}
+		if (p->end - alloc->end > max)
+			max = p->end - alloc->end;
+		p->max_free_bytes_block = max;
 	}
-	if (p->end - alloc->end > max)
-		max = p->end - alloc->end;
-	p->max_free_bytes_block = max;
+	else
+		p->max_free_bytes_block = p->end - p->start;
 }
 
 void		*alloc_page(t_page *p, size_t size)
@@ -84,7 +89,7 @@ void		*alloc_page(t_page *p, size_t size)
 		alloc_at_page(alloc, free_alloc_block, size);
 	}
 	if (M_OPT_VERBOSE)
-		ft_printf("allocated %s block of [%i] at address: %p\n", size_to_type(size) == M_SMALL ? "small" : "tiny", size, free_alloc_block->start);
+		ft_printf("allocated %s block of [%i] at address: %p\n", type_to_text(size_to_type(size)), size, free_alloc_block->start);
 	update_max_free_bytes_block(p);
 	return free_alloc_block->start;
 }

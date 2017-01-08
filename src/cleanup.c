@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 02:07:44 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 20:38:49 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 23:13:26 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	clean_heap(void) __attribute__((destructor));
 static void	clean_heap(void)
 {
 	if (M_OPT_VERBOSE)
-		ft_printf("cleaning up !\n");
+		ft_printf("cleaning up:\n");
 	foreach_pages(c_free_page);
 	foreach_heap(c_free_heap, true);
 }

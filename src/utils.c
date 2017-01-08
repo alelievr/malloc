@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 00:29:59 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:08:35 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/07 23:11:41 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,9 @@ void			munmap_wrapper(void *addr, size_t size)
 int				size_to_type(size_t size)
 {
 	return (size > 0 && size <= M_TINY) ? M_TINY : TER(size > M_TINY && size <= M_SMALL, M_SMALL, M_LARGE); 
+}
+
+char			*type_to_text(int type)
+{
+	return ((type == M_TINY) ? "tiny" : TER(type == M_SMALL, "small", "large"));
 }
