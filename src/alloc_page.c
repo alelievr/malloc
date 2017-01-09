@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 23:23:56 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/09 01:54:21 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,20 @@ void		update_max_free_bytes_block(t_page *p)
 
 void		*alloc_page(t_page *p, size_t size)
 {
-	t_alloc		*free_alloc_block;
+	t_alloc		*free_alloc_block = NULL;
 	t_alloc		*alloc;
 	int			i;
 
+	DEBUG("alloc page start\n");
+	//find free block
 	if (FOR(i = 0, i < MAX_ALLOCS_IN_PAGE, i++))
 		if (p->_allocs_buff[i].start == NULL)
 		{
 			free_alloc_block = p->_allocs_buff + i;
 			break ;
 		}
+	if (!free_alloc_block)
+		ft_printf("can't find free alloc block !\n");
 	alloc = p->alloc;
 	//check if enouth space between strt of page and first allocated block:
 	if (alloc == NULL || alloc->start - p->start > (long)size)
@@ -88,6 +92,7 @@ void		*alloc_page(t_page *p, size_t size)
 		}
 		alloc_at_page(alloc, free_alloc_block, size);
 	}
+	DEBUG("alloc page end\n");
 	if (M_OPT_VERBOSE)
 		ft_printf("allocated %s block of [%i] at address: %p\n", type_to_text(size_to_type(size)), size, free_alloc_block->start);
 	update_max_free_bytes_block(p);

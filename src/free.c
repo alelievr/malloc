@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:40 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 23:12:30 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/09 01:45:05 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void		ft_free(void *ptr)
 	t_alloc		*a;
 	int			index;
 
+	DEBUG("free start\n");
 	if (!ptr && M_OPT_VERBOSE)
 	{
 		ft_printf("NULL passed for free\n");
@@ -34,4 +35,5 @@ void		ft_free(void *ptr)
 	free_alloc(p, a);
 	if (M_OPT_VERBOSE)
 		ft_printf("freed %s page at [%p]\n", type_to_text(p->page_type), ptr);
+	DEBUG("free end\n");
 }

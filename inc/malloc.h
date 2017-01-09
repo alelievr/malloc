@@ -6,22 +6,25 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 02:06:23 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/08 20:42:32 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/09 00:52:16 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MALLOC_H
 # define MALLOC_H
 
+#include <stdbool.h>
+#include <stddef.h>
+
 enum	E_MALLOC_INFO
 {
-	M_CHECK_IGNORE =		0x1,
+	M_CHECK_CATCH =			0x1,
 	M_CHECK_PRINT =			0x2,
 	M_CHECK_ABORT =			0x4,
 	M_CHECK_STACKTRACE =	0x8,
 	M_CHECK_VERBOSE =		0x10,
 	M_LIMIT_PAGES =			0x20,
-	M_IGNORE =				M_CHECK_IGNORE,
+	M_CATCH =				M_CHECK_CATCH,
 	M_PRINT =				M_CHECK_PRINT,
 	M_ABORT =				M_CHECK_ABORT,
 	M_STACKTRACE =			M_CHECK_STACKTRACE,
@@ -39,5 +42,7 @@ extern void				mallopt(int option, int value);
 
 extern size_t			malloc_page_size(void *ptr);
 extern size_t			malloc_size(void *ptr);
+
+extern bool				dump_all(void);
 
 #endif

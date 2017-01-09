@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/08 21:21:42 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/09 01:48:29 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,23 @@
 # include "libft.h"
 # include "malloc.h"
 
+# define DEBUG
+
 # define MIN_ALLOC_SIZE		0x10
 # define MAX_ALLOCS_IN_PAGE	128
 # define MAX_PAGES_PER_HEAP	128
 
-enum	E_MALLOC_COLORS
-{
-	M_EORROR_COLOR = 196,
-	M_FREED_BYTE_COLOR = 226,
-	M_UNALLOCATED_BYTE_COLOR = 245,
-	M_ALLOCATED_BYTE_COLOR = 154,
-};
+# define M_ERROR_COLOR				"\033[38;5;196m"
+# define M_FREED_BYTE_COLOR			"\033[38;5;226m"
+# define M_UNALLOCATED_BYTE_COLOR	"\033[38;5;245m"
+# define M_ALLOCATED_BYTE_COLOR		"\033[38;5;154m"
+# define M_DEBUG_COLOR				"\033[38;5;231m"
+# define M_CLEAR_COLOR				"\033[0m"
+
+# ifdef DEBUG
+#  undef DEBUG
+#  define DEBUG(x, args...) ft_printf(M_DEBUG_COLOR x M_CLEAR_COLOR, ##args);
+# endif
 
 /*
 **	TINY = getpagesize() / 128 (max number of allocs in a page) 
@@ -133,6 +139,7 @@ void				*mmap_wrapper(void *ptr, size_t size);
 void				munmap_wrapper(void *addr, size_t size);
 int					size_to_type(size_t size);
 char				*type_to_text(int type);
+void				stacktrace(void);
 
 bool				find_page(void *ptr, t_heap **f_heap, int *f_index);
 void				update_max_free_bytes_block(t_page *p);

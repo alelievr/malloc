@@ -6,11 +6,12 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 00:29:59 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 23:11:41 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/08 23:08:12 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
+#include <execinfo.h>
 
 pthread_mutex_t		g_malloc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -19,9 +20,22 @@ static void ft_malloc_init()
 {
 }
 
-static void		stacktrace(void)
+void			stacktrace(void)
 {
+	void	*lines[1024];
+	char	**strings;
+	int		n;
+	int		i;
 
+	n = backtrace(lines, 1024);
+	ft_printf("backtrace:\n");
+	strings = backtrace_symbols(lines, n);
+	if (!strings)
+		ft_printf("can't get backtrace !\n");
+	else
+		if (FOR(i = 0, i < n, i++))
+			ft_printf("%s\n", strings[i]);
+	free(strings);
 }
 
 void			*mmap_wrapper(void *p, size_t size)
@@ -48,6 +62,8 @@ void			munmap_wrapper(void *addr, size_t size)
 			ERR("failed to free memory\n");
 		if (M_OPT_ABORT)
 			abort();
+		if (M_OPT_STACKTRACE)
+			stacktrace();
 	}
 }
 

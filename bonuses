@@ -1,5 +1,5 @@
 +	advanced display functions
-+	mallopt(which provides verbose, abort, stacktrace and ignore mode)
++	mallopt(which provides verbose, abort, stacktrace and catch mode)
 +	cleanup at program exit
 +	thread-safe malloc system (see mutex)
 +	calloc, reallocf
