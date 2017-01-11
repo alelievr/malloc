@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/20 23:25:04 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/07 19:55:02 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/11 01:14:30 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static bool 		new_page_add(t_heap *p)
 	return false;
 }
 
+extern void exit(int c) __attribute__((noreturn));
 t_page		*new_page(size_t size, bool locked)
 {
 	t_page		*p;
@@ -48,11 +49,13 @@ t_page		*new_page(size_t size, bool locked)
 		return NULL;
 	if (M_OPT_VERBOSE)
 		ft_printf("creating new page with size: %i\n", size);
+	memset(p->_allocs_buff, 0, sizeof(p->_allocs_buff));
 	p->page_type = size_to_type(size);
 	p->max_free_bytes_block = full_alloc_size;
 	p->total_alloc_size = full_alloc_size + sizeof(t_page);
 	p->start = (void *)p + sizeof(t_page);
-	p->end = (void *)p + full_alloc_size + sizeof(t_page);
+	p->end = (void *)p + sizeof(t_page) + full_alloc_size;
+	p->_page_alloc_ptr = (void *)p;
 	p->alloc = NULL;
 	if (!locked)
 		LOCK;
@@ -70,7 +73,7 @@ static bool	delete_page_from_heap(t_page *p, t_heap *h, int index)
 		return (false);
 	h->pages_chunk[index] = NULL;
 	h->free_pages_number++;
-	munmap(p->start, p->end - p->start);
+	munmap_wrapper(p->_page_alloc_ptr, p->end - p->start);
 	return (true);
 }
 

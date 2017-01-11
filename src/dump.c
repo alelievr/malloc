@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 12:59:46 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/22 02:07:58 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/10 19:24:47 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,26 @@ static bool		indent = false;
 bool		dump_page(t_page *p)
 {
 	const char	*ind = (indent) ? "\t" : "";
-	t_alloc		*alloc;
+	char		*color;
+	char		*ptr;
 
-	if ((alloc = p->alloc) == NULL)
+	if (p->alloc == NULL)
 	{
 		ft_printf("%snothing allocated in the page\n", ind);
 		return false;
 	}
-	while (alloc)
+	INIT(int, i, 0);
+	INIT(int, j, 0);
+	if (FOR(i = 0, i < MAX_ALLOCS_IN_PAGE / 16 && ft_printf("%s%p: ", ind, p->start + i * 16 * p->page_type), ft_printf("\n") && i++))
 	{
-		ft_printf("%sallocated: %p - %p\n", ind, alloc->start, alloc->end);
-		alloc = alloc->next;
+		if (FOR(j = 0, j < 16, j++))
+		{
+			ptr = p->alloc->start + (i * 16 + j) * p->page_type;
+			color = (find_alloc(p, ptr)) ? M_ALLOCATED_BYTE_COLOR : M_UNALLOCATED_BYTE_COLOR;
+			ft_printf("%s%.1x "M_CLEAR_COLOR, color, *ptr);
+		}
 	}
+	ft_printf("\n");
 	return true;
 }
 
@@ -60,7 +68,14 @@ bool		dump_heap(t_heap *h)
 		if (h->pages_chunk[i])
 		{
 			ALIAS(h->pages_chunk[i], p);
-			ft_printf("-> %.4i | %4s | %.10i     | %p\n", i, type_to_string(p->page_type), p->end - p->start, p->start);
+			INIT(int, count_block, 0);
+			ALIAS(p->alloc, a);
+			while (a)
+			{
+				count_block++;
+				a = a->next;
+			}
+			ft_printf("-> %.4i | %5s | %.10i     | %.9i | %p\n", i, type_to_string(p->page_type), count_block, p->end - p->start, p->start);
 			if (expand)
 				dump_page(p);
 		}

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 01:05:59 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/08 21:31:52 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/11 02:37:54 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,21 @@ bool		foreach_heap(t_heap_callback f, bool alwaysfalse)
 	if (!succeed && !alwaysfalse)
 		f(alloc_and_append_new_heap());
 	return succeed;
+}
+
+bool		foreach_allocated_heap(t_heap_callback f)
+{
+	t_heap	*h;
+	t_heap	*next;
+
+	h = get_heap();
+	while (h)
+	{
+		next = h->next;
+		while (next && next->allocated == 0)
+			next = next->next;
+		f(h);
+		h = next;
+	}
+	return true;
 }

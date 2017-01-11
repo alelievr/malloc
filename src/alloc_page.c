@@ -6,11 +6,13 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/09 01:54:21 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/11 00:51:36 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
+
+#define ROUND_TO_MIN_SIZE(x, y) (((size_t)x < (size_t)y) ? y : y)
 
 static void	alloc_start_page(t_page *p, t_alloc *free_block, size_t size)
 {
@@ -43,9 +45,11 @@ void		update_max_free_bytes_block(t_page *p)
 {
 	long		max;
 	t_alloc		*alloc;
+	int			i;
 
 	alloc = p->alloc;
 	max = 0;
+	i = 0;
 	if (alloc)
 	{
 		while (alloc->next)
@@ -53,6 +57,7 @@ void		update_max_free_bytes_block(t_page *p)
 			if (alloc->next->start - alloc->end > max)
 				max = alloc->next->start - alloc->end;
 			alloc = alloc->next;
+			i++;
 		}
 		if (p->end - alloc->end > max)
 			max = p->end - alloc->end;
@@ -60,6 +65,8 @@ void		update_max_free_bytes_block(t_page *p)
 	}
 	else
 		p->max_free_bytes_block = p->end - p->start;
+	if (i == MAX_ALLOCS_IN_PAGE - 1)
+		p->max_free_bytes_block = 0;
 }
 
 void		*alloc_page(t_page *p, size_t size)
@@ -68,6 +75,7 @@ void		*alloc_page(t_page *p, size_t size)
 	t_alloc		*alloc;
 	int			i;
 
+	size = ROUND_TO_MIN_SIZE(size, p->page_type);
 	DEBUG("alloc page start\n");
 	//find free block
 	if (FOR(i = 0, i < MAX_ALLOCS_IN_PAGE, i++))

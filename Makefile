@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2017/01/08 21:31:37 by alelievr         ###   ########.fr        #
+#    Updated: 2017/01/10 23:22:33 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -226,16 +226,11 @@ re: fclean all
 f:	all run
 
 test:
-	#echo DYLD_LIBRARY_PATH=$(realpath $(NAME))
-	@i=0
 	@cd test
-	for f in $(wildcard test/*.c) ; do \
-		i=$(($i+1)); \
-		clang -I inc $(NAME) -o test/test$${i}.bin $$f; \
-	done
-	@for f in $(wildcard test/*.bin) ; do \
-		echo "executing" $$f; \
-		./$$f; \
+	@i=0; for f in $(wildcard test/*.c) ; do \
+		i=$$(($$i+1)); \
+		fout=`echo "$$f" | rev | cut -d"/" -f1 | rev | cut -d"." -f1`; \
+		clang -I libft/include -I inc $(NAME) -o test/$$fout.bin $$f; \
 	done
 
 hardtest:

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/09 01:48:29 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/11 02:31:51 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "libft.h"
 # include "malloc.h"
 
-# define DEBUG
+//# define DEBUG
 
 # define MIN_ALLOC_SIZE		0x10
 # define MAX_ALLOCS_IN_PAGE	128
@@ -35,6 +35,8 @@
 # ifdef DEBUG
 #  undef DEBUG
 #  define DEBUG(x, args...) ft_printf(M_DEBUG_COLOR x M_CLEAR_COLOR, ##args);
+# else
+#  define DEBUG(x, args...)
 # endif
 
 /*
@@ -45,8 +47,8 @@
 
 enum	E_MALLOC_SIZE
 {
-	M_TINY = 64,
-	M_SMALL = 512,
+	M_TINY = 32,
+	M_SMALL = 128,
 	M_LARGE = -1,
 	M_TINY_PAGE = M_TINY * MAX_ALLOCS_IN_PAGE,
 	M_SMALL_PAGE = M_SMALL * MAX_ALLOCS_IN_PAGE,
@@ -60,12 +62,12 @@ enum	E_MALLOC_LIMITS
 	M_MIN = -3,
 };
 
-# define M_OPT_PRINT (get_malloc_info()->debug_flag & 1 << M_CHECK_PRINT)
-# define M_OPT_IGNORE (get_malloc_info()->debug_flag & 1 << M_CHECK_IGNORE)
-# define M_OPT_ABORT (get_malloc_info()->debug_flag & 1 << M_CHECK_ABORT)
-# define M_OPT_STACKTRACE (get_malloc_info()->debug_flag & 1 << M_CHECK_STACKTRACE)
-# define M_OPT_VERBOSE (get_malloc_info()->debug_flag & 1 << M_CHECK_VERBOSE)
-# define ERR(x, args...) ft_dprintf(2, x, ##args);
+# define M_OPT_PRINT		(get_malloc_info()->debug_flag & 1 << M_CHECK_PRINT)
+# define M_OPT_IGNORE		(get_malloc_info()->debug_flag & 1 << M_CHECK_IGNORE)
+# define M_OPT_ABORT		(get_malloc_info()->debug_flag & 1 << M_CHECK_ABORT)
+# define M_OPT_STACKTRACE	(get_malloc_info()->debug_flag & 1 << M_CHECK_STACKTRACE)
+# define M_OPT_VERBOSE		(get_malloc_info()->debug_flag & 1 << M_CHECK_VERBOSE)
+# define ERR(x, args...)	ft_dprintf(2, x, ##args);
 
 # define LOCK		pthread_mutex_lock(&g_malloc_mutex);
 # define UNLOCK		pthread_mutex_unlock(&g_malloc_mutex);
@@ -85,6 +87,7 @@ typedef struct		s_page
 	t_alloc		_allocs_buff[MAX_ALLOCS_IN_PAGE];
 	t_alloc		*alloc;
 	void		*start;
+	void		*_page_alloc_ptr;
 	void		*end;
 	size_t		total_alloc_size;
 }					t_page;
@@ -125,6 +128,7 @@ bool				foreach_pages(t_page_callback f);
 t_heap				*alloc_and_append_new_heap(void);
 t_heap				*get_heap(void) __attribute__((constructor));
 bool				foreach_heap(t_heap_callback f, bool failsafe);
+bool				foreach_allocated_heap(t_heap_callback f);
 
 /*
 **	Option functons:
@@ -140,6 +144,7 @@ void				munmap_wrapper(void *addr, size_t size);
 int					size_to_type(size_t size);
 char				*type_to_text(int type);
 void				stacktrace(void);
+void				add_new_page_to_heap(t_page *p);
 
 bool				find_page(void *ptr, t_heap **f_heap, int *f_index);
 void				update_max_free_bytes_block(t_page *p);
@@ -159,7 +164,7 @@ bool				dump_page(t_page *p);
 void				*alloc_page(t_page *p, size_t size);
 void				*ft_alloc(void *ptr, size_t size);
 void				*ft_realloc(void *ptr, size_t size);
-t_page				*large_alloc(size_t size);
+t_page				*large_alloc(size_t size, void *data, size_t dsize);
 void				ft_free(void *ptr);
 
 #endif

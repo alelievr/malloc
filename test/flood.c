@@ -1,20 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic.c                                            :+:      :+:    :+:   */
+/*   flood.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/08 20:19:08 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/11 01:19:32 by alelievr         ###   ########.fr       */
+/*   Created: 2017/01/09 20:49:34 by alelievr          #+#    #+#             */
+/*   Updated: 2017/01/11 02:37:40 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "malloc.h"
+
+#define SIZE	200000
 
 int		main(void)
 {
+	void	*ptrs[SIZE];
+
 	mallopt(M_VERBOSE, 1);
-	printf("hello%s%i%s\n", " ", 42, " world !");
+	for (int i = 0; i < SIZE; i++)
+		ptrs[i] = malloc(23);
+
+	for (int i = 0; i < SIZE; i++)
+		free(ptrs[i]);
 }

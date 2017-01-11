@@ -1,20 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic.c                                            :+:      :+:    :+:   */
+/*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/08 20:19:08 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/11 01:19:32 by alelievr         ###   ########.fr       */
+/*   Created: 2017/01/10 23:28:18 by alelievr          #+#    #+#             */
+/*   Updated: 2017/01/10 23:32:39 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "malloc.h"
+#include <unistd.h>
+#include <stdio.h>
 
 int		main(void)
 {
-	mallopt(M_VERBOSE, 1);
-	printf("hello%s%i%s\n", " ", 42, " world !");
+	printf("executing %s binary ...\n", "ls");
+
+	char	*bin[] = {"ls", "-laR", NULL};
+	char	*env[] = {"DYLD_INSERT_LIBRARIES=/Users/alelievr/c/ft_malloc/libft_malloc_x86_64_Darwin.so", "DYLD_FORCE_FLAT_NAMESPACE=1"};
+
+	execve("/bin/ls", bin, env);
 }

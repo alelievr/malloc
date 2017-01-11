@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:40 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/09 01:45:05 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/10 23:26:59 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void		ft_free(void *ptr)
 		return ;
 	}
 	ALIAS(heap->pages_chunk[index], p);
-	free_alloc(p, a);
 	if (M_OPT_VERBOSE)
 		ft_printf("freed %s page at [%p]\n", type_to_text(p->page_type), ptr);
+	free_alloc(p, a);
 	DEBUG("free end\n");
 }

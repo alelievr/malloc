@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 02:07:44 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/08 20:28:32 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/11 02:32:21 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static bool	c_free_page(t_page *p, t_heap *h, int index)
 {
 	if (M_OPT_VERBOSE)
 		ft_printf("freeing page %i (addr: %p)\n", index, p->start);
-	munmap_wrapper(p, p->total_alloc_size);
+	munmap_wrapper(p->_page_alloc_ptr, p->total_alloc_size);
 	(void)h;
 	(void)index;
 	return false;
@@ -35,6 +35,8 @@ static void	clean_heap(void)
 {
 	if (M_OPT_VERBOSE)
 		ft_printf("cleaning up:\n");
+	LOCK;
 	foreach_pages(c_free_page);
-	foreach_heap(c_free_heap, true);
+	foreach_allocated_heap(c_free_heap);
+	UNLOCK;
 }

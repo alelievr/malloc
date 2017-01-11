@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:02 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/08 21:21:27 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/11 01:43:29 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 			return NULL;
 		//reassign addresses :(
 		memcpy(new, p->start - sizeof(t_page), p->total_alloc_size);
-		munmap_wrapper(p->start - sizeof(t_page), p->total_alloc_size);
+		munmap_wrapper(p->_page_alloc_ptr - sizeof(t_page), p->total_alloc_size);
 		h->pages_chunk[index] = new;
 		return (new->alloc);
 	}
@@ -37,7 +37,12 @@ static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 
 static void	*realloc_ptr_not_found(void)
 {
-	//do classic print/abort/... stuff
+	if (M_OPT_PRINT)
+		ERR("bad pointer passed to realloc !\n");
+	if (M_OPT_ABORT)
+		abort();
+	if (M_OPT_STACKTRACE)
+		stacktrace();
 	return NULL;
 }
 
@@ -66,7 +71,7 @@ static void	*ft_realloc_basic(void *ptr, t_heap *h, int index, size_t size)
 			|| (a->next != NULL && (size_t)(a->next->start - a->end) > size))
 	{
 		if (M_OPT_VERBOSE)
-			ft_printf("altering allocated size: from %i ot %i\n", a->end - a->start, size);
+			ft_printf("altering allocated size: from %i to %i\n", a->end - a->start, size);
 		a->end = a->start + size;
 		update_max_free_bytes_block(p);
 		return (ptr);
@@ -79,6 +84,7 @@ void		*ft_realloc(void *ptr, size_t size)
 {
 	t_heap		*h;
 	t_alloc		*a;
+	t_page		*new_page;
 	int			index;
 
 	if (!find_page(ptr, &h, &index))
@@ -94,15 +100,16 @@ void		*ft_realloc(void *ptr, size_t size)
 		return realloc_large_page(h, index, ptr, size);
 	else if (size_to_type(size) == M_LARGE)
 	{
-		p = large_alloc(size);
 		a = find_alloc(p, ptr);
-		memcpy(p->start, a->start, a->end - a->start);
+		new_page = large_alloc(size, a->start, a->end - a->start);
+		add_new_page_to_heap(new_page);
 		free_alloc(p, a);
+		return (new_page->start);
 	}
 	else if ((p->page_type == M_TINY && size_to_type(size) == M_SMALL)
 			|| (p->page_type == M_SMALL && size_to_type(size) == M_TINY))
 		return ft_realloc_switch_page(ptr, h, index, size);
 	else
 		return ft_realloc_basic(ptr, h, index, size);
-	return NULL;
+	return (NULL);
 }
