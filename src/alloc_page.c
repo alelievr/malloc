@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 21:38:29 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/14 00:11:16 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void		*alloc_page(t_page *p, size_t size)
 	DEBUG1("free block count: %i\n", page_count_free_allocs(p));
 	DEBUG("alloc page end, alloc block count: %i\n", page_count_allocs(p));
 	if (M_OPT_VERBOSE)
-		ft_printf("allocated %s block of [%i] at address: %p\n", type_to_text(size_to_type(size)), size, free_alloc_block->start);
+		ft_printf("allocated %s block of [%i] at address: %p\n", type_to_text(size_to_type(size), false), size, free_alloc_block->start);
 	update_max_free_bytes_block(p);
 	return free_alloc_block->start;
 }

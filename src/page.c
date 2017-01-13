@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/20 23:25:04 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 22:34:41 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/14 00:12:24 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static bool	delete_page_from_heap(t_page *p, t_heap *h, int index)
 {
 	if (p != g_current_page)
 		return (false);
-	DEBUG1("deleting %s page [%i]\n", type_to_text(p->page_type), index);
+	DEBUG1("deleting %s page [%i]\n", type_to_text(p->page_type, false), index);
 	h->pages_chunk[index] = NULL;
 	h->free_pages_number++;
 	munmap_wrapper(p->_page_alloc_ptr, p->end - p->start);
