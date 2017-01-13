@@ -15,7 +15,6 @@ int		main(void)
 	char *addr2;
 	char *addr3;
 
-	mallopt(M_VERBOSE, 1);
 	addr1 = (char *)malloc(16 * Mo);
 	strcpy(addr1, "Bonjours\n");
 	print(addr1);

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 22:57:36 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 23:11:11 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "libft.h"
 # include "malloc.h"
 
-# define DEBUG
+//# define DEBUG
 
 # define MIN_ALLOC_SIZE		0x10
 # define MAX_ALLOCS_IN_PAGE	128

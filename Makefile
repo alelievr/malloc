@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2017/01/13 21:53:50 by alelievr         ###   ########.fr        #
+#    Updated: 2017/01/14 00:07:35 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -249,7 +249,7 @@ subject-tests:
 	@i=0; for f in $(wildcard subject-tests/*.bin) ; do \
 		i=$$(($$i+1)); \
 		echo ./$$f; \
-		DYLD_INSERT_LIBRARIES=$(realpath $(NAME)) DYLD_FORCE_FLAT_NAMESPACE=1 ./$$f; \
+		./$$f; \
 	done
 
 #	Checking norme

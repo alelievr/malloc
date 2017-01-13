@@ -6,11 +6,15 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:02 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 23:07:15 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 23:49:57 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
+
+#define MIN(x, y) ((x < y) ? x : y)
+
+#define UPDATE_ALLOC(alloc, st, en, siz) alloc->start = st; alloc->end = en; alloc->true_size = siz;
 
 static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 {
@@ -19,23 +23,22 @@ static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 	INIT(t_page, *p, h->pages_chunk[index]);
 	if (M_OPT_VERBOSE)
 		ft_printf("reallocating large page from %io to %io\n", p->alloc->end - p->alloc->start, size);
-	ft_printf("old allocated pointer: %p\n", ptr);
-	if ((ptr = mmap_wrapper(ptr, size)) == MAP_FAILED)
+	if ((ptr = mmap_wrapper(ptr, sizeof(t_page) + size)) == MAP_FAILED)
 	{
 		DEBUG1("mmap failed to enlarge initial memory block, reallocating new block\n");
 		if (!(new = mmap_wrapper(NULL, sizeof(t_page) + size)))
 			return NULL;
 		//reassign addresses :(
-		memcpy(new, p->start - sizeof(t_page), p->total_alloc_size);
+		ft_memcpy(new, p->start - sizeof(t_page), MIN(p->total_alloc_size, size));
+		UPDATE_ALLOC(new->alloc, p->start, p->end, size);
 		munmap_wrapper(p->_page_alloc_ptr - sizeof(t_page), p->total_alloc_size);
 		h->pages_chunk[index] = new;
 		return (new->alloc);
 	}
 	ALIAS((t_page *)ptr, new_page);
-	memcpy(new_page, p, sizeof(t_page));
+	ft_memcpy(new_page, p, sizeof(t_page));
 	new_page->end = new_page->start + size;
-	new_page->alloc->true_size = size;
-	new_page->alloc->end = new_page->end;
+	UPDATE_ALLOC(new_page->alloc, new_page->start, new_page->end, size);
 	new_page->total_alloc_size = size + sizeof(t_page);
 	return p->start;
 }

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/10 23:28:18 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 17:09:05 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 23:14:06 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int		main(int ac, char **av, char **environ)
 
 	printf("executing %s binary ...\n", bin);
 
-	char	*args[] = {bin, NULL};
+	char	*args[] = {bin, "-Gl", NULL};
 	char	*env[0xF00] = {"DYLD_INSERT_LIBRARIES=/Users/alelievr/c/ft_malloc/libft_malloc_x86_64_Darwin.so", "DYLD_FORCE_FLAT_NAMESPACE=1"};
 
 	i = 0;
