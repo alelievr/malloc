@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 17:58:41 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/11 02:34:57 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 01:47:37 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@
 static t_page	*g_page;
 static int		g_requested_size;
 static int		g_type;
+static int		g_page_index;
 
 static bool		find_empty_page(t_page *p, t_heap *h, int i)
 {
 	if (p->page_type == g_type && p->max_free_bytes_block >= g_requested_size)
 	{
 		g_page = p;
+		g_page_index = i;
 		return true;
 	}
 	(void)h;
@@ -85,39 +87,38 @@ extern int write(int, char *, size_t);
 
 void			*ft_alloc(void *ptr, size_t size)
 {
-	DEBUG("ft_alloc begin\n");
 	//mallopt(M_VERBOSE, 1);
 	if (size == 0 && ptr != NULL)
 	{ ft_free(ptr); return ft_alloc(NULL, MIN_ALLOC_SIZE); }
 	if (ptr != NULL)
 		return ft_realloc(ptr, size);
+	DEBUG("ft_alloc begin\n");
 	INIT(void, *ret, NULL);
 	g_type = size_to_type(size);
 	if (g_type != M_LARGE)
 	{
 		LOCK;
 		g_requested_size = size;
+		g_page_index = -1;
 		if (!foreach_pages(find_empty_page))
 			if (!(g_page = new_page(size, true)))
 				GOTO(end);
 		UNLOCK;
-		{
-			int i = 0;
-			ALIAS(g_page->alloc, a);
-			while (a)
+		{ //this is a debug block
+			int i = 0, k = 0;
+			i = 128 - page_count_allocs(g_page);
+			k = page_count_free_allocs(g_page);
+			DEBUG("on page [%i] not alloc number: %i\n", g_page_index, i);
+			DEBUG("free alloc block: %i\n", k);
+			if (i != k)
 			{
-				a = a->next;
-				i++;
+				ft_printf("error detected, aborting !\n");
+				abort();
 			}
-			ft_printf("not alloc number: %i\n", 128 - i);
-			i = 0;
-			for (int j = 0; j < MAX_ALLOCS_IN_PAGE; j++)
-				if (g_page->_allocs_buff[j].start == NULL)
-					i++;
-			ft_printf("free alloc block: %i\n", i);
 		}
-		ft_printf("trying to alloc size: %i on page with size %i:\n", size, g_page->max_free_bytes_block);
-		return alloc_page(g_page, size);
+		DEBUG("trying to alloc size: %i on page with size %i:\n", size, g_page->max_free_bytes_block);
+		ret = alloc_page(g_page, size);
+		GOTO(end);
 	}
 	else
 		if (!(g_page = large_alloc(size, NULL, 0)))

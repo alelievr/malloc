@@ -1,34 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   page_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/10 23:28:18 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 01:47:27 by alelievr         ###   ########.fr       */
+/*   Created: 2017/01/13 00:31:57 by alelievr          #+#    #+#             */
+/*   Updated: 2017/01/13 00:40:09 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
-#include <unistd.h>
-#include <stdio.h>
+#include "malloc_internal.h"
 
-int		main(int ac, char **av, char **environ)
+int		page_count_allocs(t_page *p)
 {
 	int		i;
-	printf("executing %s binary ...\n", "bash");
-
-	char	*bin[] = {"bash", NULL};
-	char	*env[0xF00] = {"DYLD_INSERT_LIBRARIES=/Users/alelievr/c/ft_malloc/libft_malloc_x86_64_Darwin.so", "DYLD_FORCE_FLAT_NAMESPACE=1"};
 
 	i = 0;
-	while (environ[i])
+	ALIAS(p->alloc, a);
+	while (a)
 	{
-		env[i + 2] = environ[i];
+		a = a->next;
 		i++;
 	}
-	env[i + 2] = NULL;
+	return (i);
+}
 
-	execve("/bin/bash", bin, env);
+int		page_count_free_allocs(t_page *p)
+{
+	int		i;
+	int		j;
+
+	j = 0;
+	if (FOR(i = 0, i < MAX_ALLOCS_IN_PAGE, i++))
+		if (p->_allocs_buff[i].start == NULL)
+			j++;
+	return (j);
 }

@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2017/01/10 23:22:33 by alelievr         ###   ########.fr        #
+#    Updated: 2017/01/13 00:35:01 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SRCDIR		=	src
 SRC			=	main.c			\
 				heap.c			\
 				page.c			\
+				page_utils.c	\
 				utils.c			\
 				options.c		\
 				cleanup.c		\

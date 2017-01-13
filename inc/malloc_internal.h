@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/11 02:31:51 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 01:54:05 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "libft.h"
 # include "malloc.h"
 
-//# define DEBUG
+# define DEBUG
 
 # define MIN_ALLOC_SIZE		0x10
 # define MAX_ALLOCS_IN_PAGE	128
@@ -30,13 +30,22 @@
 # define M_UNALLOCATED_BYTE_COLOR	"\033[38;5;245m"
 # define M_ALLOCATED_BYTE_COLOR		"\033[38;5;154m"
 # define M_DEBUG_COLOR				"\033[38;5;231m"
+# define M_DEBUG1_COLOR				"\033[38;5;11m"
+# define M_DEBUG2_COLOR				"\033[38;5;159m"
+# define M_DEBUG3_COLOR				"\033[38;5;47m"
 # define M_CLEAR_COLOR				"\033[0m"
 
 # ifdef DEBUG
 #  undef DEBUG
 #  define DEBUG(x, args...) ft_printf(M_DEBUG_COLOR x M_CLEAR_COLOR, ##args);
+#  define DEBUG1(x, args...) ft_printf(M_DEBUG1_COLOR x M_CLEAR_COLOR, ##args);
+#  define DEBUG2(x, args...) ft_printf(M_DEBUG2_COLOR x M_CLEAR_COLOR, ##args);
+#  define DEBUG3(x, args...) ft_printf(M_DEBUG3_COLOR x M_CLEAR_COLOR, ##args);
 # else
 #  define DEBUG(x, args...)
+#  define DEBUG1(x, args...)
+#  define DEBUG2(x, args...)
+#  define DEBUG3(x, args...)
 # endif
 
 /*
@@ -147,6 +156,8 @@ void				stacktrace(void);
 void				add_new_page_to_heap(t_page *p);
 
 bool				find_page(void *ptr, t_heap **f_heap, int *f_index);
+int					page_count_allocs(t_page *p);
+int					page_count_free_allocs(t_page *p);
 void				update_max_free_bytes_block(t_page *p);
 t_alloc				*find_alloc(t_page *p, void *ptr);
 void				free_alloc(t_page *p, t_alloc *a);

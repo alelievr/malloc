@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:02 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/11 01:43:29 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 01:56:43 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void		*ft_realloc(void *ptr, size_t size)
 	t_page		*new_page;
 	int			index;
 
+	DEBUG("realloc start\n");
 	if (!find_page(ptr, &h, &index))
 	{
 		if (M_OPT_VERBOSE)
