@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/20 23:25:04 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 14:03:42 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 22:34:41 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ void		free_page(t_page *p)
 	DEBUG("free page start\n");
 	LOCK;
 	g_current_page = p;
-	foreach_pages(delete_page_from_heap);
+	if (!foreach_pages(delete_page_from_heap) && M_OPT_VERBOSE)
+		ft_printf("can't free page !\n");
 	DEBUG("free page end\n");
 	UNLOCK;
 }

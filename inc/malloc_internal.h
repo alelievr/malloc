@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 01:54:05 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 22:57:36 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ typedef struct		s_alloc
 {
 	void			*start;
 	void			*end;
+	long			true_size;
 	struct s_alloc	*next;
 }					t_alloc;
 

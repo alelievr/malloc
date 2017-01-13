@@ -6,7 +6,7 @@
 #    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2017/01/13 00:35:01 by alelievr         ###   ########.fr        #
+#    Updated: 2017/01/13 21:53:50 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SRC			=	main.c			\
 				realloc.c		\
 				free.c			\
 				malloc.c		\
+				show.c			\
 
 #	Objects
 OBJDIR		=	obj
@@ -237,6 +238,20 @@ test:
 hardtest:
 	DYLD_INSERT_LIBRARIES=$(realpath $(NAME)) DYLD_FORCE_FLAT_NAMESPACE=1 bash
 
+subject-tests:
+	echo "Compiling test subject sources"
+	@i=0; for f in $(wildcard subject-tests/*.c) ; do \
+		i=$$(($$i+1)); \
+		fout=`echo "$$f" | rev | cut -d"/" -f1 | rev | cut -d"." -f1`; \
+		clang -I libft/include -I inc $(NAME) -o subject-tests/$$fout.bin $$f; \
+	done
+	echo "Executing subject tests:"
+	@i=0; for f in $(wildcard subject-tests/*.bin) ; do \
+		i=$$(($$i+1)); \
+		echo ./$$f; \
+		DYLD_INSERT_LIBRARIES=$(realpath $(NAME)) DYLD_FORCE_FLAT_NAMESPACE=1 ./$$f; \
+	done
+
 #	Checking norme
 norme:
 	@norminette $(NORME) | sed "s/Norme/[38;5;$(CNORM_T)➤ [38;5;$(CNORM_OK)Norme/g;s/Warning/[0;$(CNORM_WARN)Warning/g;s/Error/[0;$(CNORM_ERR)Error/g"
@@ -352,4 +367,4 @@ coffee:
 	@echo '         ""--..,,_____            _____,,..--"""'''
 	@echo '                      """------"""'
 
-.PHONY: all clean fclean re norme codesize test
+.PHONY: all clean fclean re norme codesize test subject-tests

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 02:06:23 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/09 00:52:16 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 21:40:57 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,8 @@ extern size_t			malloc_page_size(void *ptr);
 extern size_t			malloc_size(void *ptr);
 
 extern bool				dump_all(void);
+
+extern void				show_alloc_mem(void);
+extern void				show_alloc_mem_ex(void);
 
 #endif

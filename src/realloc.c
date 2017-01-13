@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:02 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 13:20:31 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 23:07:15 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 	INIT(t_page, *p, h->pages_chunk[index]);
 	if (M_OPT_VERBOSE)
 		ft_printf("reallocating large page from %io to %io\n", p->alloc->end - p->alloc->start, size);
+	ft_printf("old allocated pointer: %p\n", ptr);
 	if ((ptr = mmap_wrapper(ptr, size)) == MAP_FAILED)
 	{
+		DEBUG1("mmap failed to enlarge initial memory block, reallocating new block\n");
 		if (!(new = mmap_wrapper(NULL, sizeof(t_page) + size)))
 			return NULL;
 		//reassign addresses :(
@@ -29,9 +31,12 @@ static void	*realloc_large_page(t_heap *h, int index, void *ptr, size_t size)
 		h->pages_chunk[index] = new;
 		return (new->alloc);
 	}
-	p->end = p->start + size;
-	p->alloc->end = p->end;
-	p->total_alloc_size = size + sizeof(t_page);
+	ALIAS((t_page *)ptr, new_page);
+	memcpy(new_page, p, sizeof(t_page));
+	new_page->end = new_page->start + size;
+	new_page->alloc->true_size = size;
+	new_page->alloc->end = new_page->end;
+	new_page->total_alloc_size = size + sizeof(t_page);
 	return p->start;
 }
 
@@ -66,7 +71,16 @@ static void	*ft_realloc_basic(void *ptr, t_heap *h, int index, size_t size)
 	t_alloc		*a;
 
 	ALIAS(h->pages_chunk[index], p);
-	a = find_alloc(p, ptr);
+	if (!(a = find_alloc(p, ptr)))
+	{
+		if (M_OPT_VERBOSE)
+			ft_printf("bad pointer passed to realloc, NULL.\n");
+		if (M_OPT_ABORT)
+			abort();
+		if (M_OPT_STACKTRACE)
+			stacktrace();
+		return (NULL);
+	}
 	if ((a->next == NULL && (size_t)(p->end - a->end) > size)
 			|| (a->next != NULL && (size_t)(a->next->start - a->end) > size))
 	{
@@ -102,8 +116,6 @@ void		*ft_realloc(void *ptr, size_t size)
 	else if (size_to_type(size) == M_LARGE)
 	{
 		a = find_alloc(p, ptr);
-		ft_printf("alloc content: %s\n", a->start);
-		ft_printf("alloc size: %i\n", a->end - a->start);
 		new_page = large_alloc(size, a->start, a->end - a->start);
 		add_new_page_to_heap(new_page);
 		free_alloc(p, a);

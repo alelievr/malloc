@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 17:58:41 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 13:57:27 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 21:37:27 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ t_page			*large_alloc(size_t size, void *data, size_t dsize)
 	alloc->start = p->start;
 	alloc->end = p->end;
 	alloc->next = NULL;
+	alloc->true_size = size;
 	if (data)
 		memcpy(alloc->start, data, dsize);
 	p->alloc = alloc;

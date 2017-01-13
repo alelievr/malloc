@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:50:13 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 00:58:31 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 21:38:29 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	alloc_start_page(t_page *p, t_alloc *free_block, size_t size)
 
 	free_block->start = p->start;
 	free_block->end = p->start + size;
+	free_block->true_size = size;
 	if (p->alloc == NULL)
 		p->alloc = free_block;
 	else
@@ -36,6 +37,7 @@ static void	alloc_at_page(t_alloc *prev, t_alloc *free_block, size_t size)
 
 	free_block->start = prev->end;
 	free_block->end = prev->end + size;
+	free_block->true_size = size;
 	tmp = prev->next;
 	prev->next = free_block;
 	free_block->next = tmp;

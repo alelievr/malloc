@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/08 20:21:49 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/12 18:25:05 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 20:21:59 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void		*calloc(size_t count, size_t size)
 void		free(void *ptr)
 {
 	ft_free(ptr);
+	(void)ptr;
 }
 
 void		*realloc(void *ptr, size_t size)

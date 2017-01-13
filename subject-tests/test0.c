@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   flood.c                                            :+:      :+:    :+:   */
+/*   test0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/09 20:49:34 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 17:06:18 by alelievr         ###   ########.fr       */
+/*   Created: 2016/05/17 17:17:34 by marene            #+#    #+#             */
+/*   Updated: 2016/05/17 17:20:34 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
-#include <string.h>
-
-#define SIZE	20000
+#include <stdlib.h>
+#include <unistd.h>
 
 int		main(void)
 {
+	int		i;
 	void	*ptr;
 
-	mallopt(M_VERBOSE, 1);
-	malloc(12);
-	for (int i = 0; i < SIZE; i++)
+	i = 0;
+	ptr = NULL;
+	write(1, "test0\n", 6);
+	while (i < 1024)
 	{
-		ptr = malloc(23);
-		memset(ptr, 'A', 23);
-		free(ptr);
+		++i;
 	}
+	return (0);
 }
