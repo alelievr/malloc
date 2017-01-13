@@ -6,17 +6,17 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 17:58:41 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 01:47:37 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 13:57:27 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
-#define MIN(x, y) ((x < y) ? (x) : (y))
-
 static t_page	*g_page;
 static int		g_requested_size;
 static int		g_type;
 static int		g_page_index;
+
+extern int write(int, char *, size_t);
 
 static bool		find_empty_page(t_page *p, t_heap *h, int i)
 {
@@ -75,15 +75,13 @@ t_page			*large_alloc(size_t size, void *data, size_t dsize)
 	alloc->end = p->end;
 	alloc->next = NULL;
 	if (data)
-		memcpy(alloc->start, data, MIN(dsize, (size_t)(alloc->end - alloc->end)));
+		memcpy(alloc->start, data, dsize);
 	p->alloc = alloc;
 	if (M_OPT_VERBOSE)
 		ft_printf("allocated large block at address: %p\n", alloc->start);
 	DEBUG("large alloc end\n");
 	return p;
 }
-
-extern int write(int, char *, size_t);
 
 void			*ft_alloc(void *ptr, size_t size)
 {

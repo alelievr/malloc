@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/22 00:43:02 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 01:56:43 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/13 13:20:31 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ void		*ft_realloc(void *ptr, size_t size)
 	else if (size_to_type(size) == M_LARGE)
 	{
 		a = find_alloc(p, ptr);
+		ft_printf("alloc content: %s\n", a->start);
+		ft_printf("alloc size: %i\n", a->end - a->start);
 		new_page = large_alloc(size, a->start, a->end - a->start);
 		add_new_page_to_heap(new_page);
 		free_alloc(p, a);
