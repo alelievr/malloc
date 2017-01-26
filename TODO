@@ -1,2 +1,2 @@
-segfault when trying malloc with dyld_start
 free heap block when empty (but not the first 3 !)
+catch crash signal for stacktrace event

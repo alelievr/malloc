@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/24 02:58:16 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/14 00:12:44 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/26 20:06:50 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,10 @@
 #  define DEBUG3(x, args...)
 # endif
 
-/*
-**	TINY = getpagesize() / 128 (max number of allocs in a page) 
-**	SMALL = getpagesize() / 128 * 8
-**	LARGE = custom size > at 256
-*/
-
 enum	E_MALLOC_SIZE
 {
-	M_TINY = 32,
-	M_SMALL = 128,
+	M_TINY = 128,
+	M_SMALL = 1024,
 	M_LARGE = -1,
 	M_TINY_PAGE = M_TINY * MAX_ALLOCS_IN_PAGE,
 	M_SMALL_PAGE = M_SMALL * MAX_ALLOCS_IN_PAGE,

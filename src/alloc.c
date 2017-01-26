@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 17:58:41 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 21:37:27 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/26 20:05:38 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void			*ft_alloc(void *ptr, size_t size)
 		UNLOCK;
 		{ //this is a debug block
 			int i = 0, k = 0;
-			i = 128 - page_count_allocs(g_page);
+			i = MAX_ALLOCS_IN_PAGE - page_count_allocs(g_page);
 			k = page_count_free_allocs(g_page);
 			DEBUG("on page [%i] not alloc number: %i\n", g_page_index, i);
 			DEBUG("free alloc block: %i\n", k);
@@ -126,6 +126,6 @@ void			*ft_alloc(void *ptr, size_t size)
 			ret = g_page->alloc->start;
 	add_new_page_to_heap(g_page);
 	end:
-	DEBUG("ft_alloc end\n");
+	DEBUG("ft_alloc end with addr: %p\n", ret);
 	return ret;
 }

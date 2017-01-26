@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/10 23:28:18 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/13 23:14:06 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/26 20:07:55 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,8 @@ int		main(int ac, char **av, char **environ)
 	}
 	env[i + 2] = NULL;
 
+	mallopt(M_VERBOSE, 1);
+	mallopt(M_ABORT, 1);
+	mallopt(M_STACKTRACE, 1);
 	execve(bin, args, env);
 }

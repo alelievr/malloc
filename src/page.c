@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/20 23:25:04 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/14 00:12:24 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/26 20:12:00 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_page		*new_page(size_t size, bool locked)
 	if (!(p = mmap_wrapper(NULL, full_alloc_size + sizeof(t_page))))
 		return NULL;
 	if (M_OPT_VERBOSE)
-		ft_printf("creating new page with size: %i\n", size);
+		ft_printf("creating new %s page with size: %i\n", type_to_text(size_to_type(size), 0), size);
 	memset(p->_allocs_buff, 0, sizeof(p->_allocs_buff));
 	p->page_type = size_to_type(size);
 	p->max_free_bytes_block = full_alloc_size;
