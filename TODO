@@ -1,2 +1,3 @@
 free heap block when empty (but not the first 3 !)
 catch crash signal for stacktrace event
+do not delete last page if we free a small / tiny page

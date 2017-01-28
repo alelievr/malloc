@@ -6,12 +6,13 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 00:29:59 by alelievr          #+#    #+#             */
-/*   Updated: 2017/01/14 00:10:31 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/01/28 17:11:39 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc_internal.h"
 #include <execinfo.h>
+#include <unistd.h>
 
 pthread_mutex_t		g_malloc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -40,8 +41,12 @@ void			stacktrace(void)
 
 void			*mmap_wrapper(void *p, size_t size)
 {
-	void	*ptr;
+	void			*ptr;
+	static int		page_size = 0;
 
+	if (page_size == 0)
+		page_size = getpagesize();
+	size += page_size - (size % page_size);
 	if ((ptr = mmap(p, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, 0, 0)) == MAP_FAILED)
 	{
 		if (M_OPT_PRINT)
